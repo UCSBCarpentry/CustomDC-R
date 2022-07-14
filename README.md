@@ -1,8 +1,6 @@
-# FIXME Lesson title
+# Intro to Data Analysis and Visualization in R
 
-[![Create a Slack Account with us](https://img.shields.io/badge/Create_Slack_Account-The_Carpentries-071159.svg)](https://swc-slack-invite.herokuapp.com/)
-
-This repository generates the corresponding lesson website from [The Carpentries](https://carpentries.org/) repertoire of lessons. 
+Using the Lesson template from the Carpentries, this repo holds customized material based on [Data Analysis and Visualization in R for Ecologists](https://datacarpentry.org/R-ecology-lesson/).
 
 ## Contributing
 
@@ -24,9 +22,7 @@ Look for the tag ![good_first_issue](https://img.shields.io/badge/-good%20first%
 
 Current maintainers of this lesson are 
 
-* FIXME
-* FIXME
-* FIXME
+* [UCSB Carpentry](https://ucsbcarpentry.github.io/)
 
 
 ## Authors
