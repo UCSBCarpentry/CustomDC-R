@@ -186,6 +186,7 @@ $codeblock-padding: 0.325em !default;
 .prereq{ @include bkSetup($color-prereq, "\e124"); }
 .solution{ @include bkSetup($color-solution, "\e105"); }
 .testimonial{ @include bkSetup($color-testimonial, "\e143"); }
+.datamoment{ @include bkSetup($color-datamoment, "\e111"); }
 
 .callout h3,
 .challenge h3,
@@ -195,7 +196,8 @@ $codeblock-padding: 0.325em !default;
 .objectives h3,
 .prereq h3,
 .solution h3,
-.testimonial h3 {
+.testimonial h3 
+.datamoment h3 {
 font-size: 1.17em;
 }
 
@@ -209,6 +211,7 @@ font-size: 1.17em;
 .prereq       { background-color: #9cd6dc20; }
 .solution     { background-color: #ded4b94d; }
 .testimonial  { background-color: #fc8dc120; }
+.datamoment   {background-color:  #71dbb520; }
 
 blockquote p {
     margin: 0.325em;
