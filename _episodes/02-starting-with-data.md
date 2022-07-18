@@ -36,6 +36,9 @@ In this palmerpenguins package, there are two datasets. 'penguins' is a simplifi
 
 This dataset is hosted by [ Palmer Station Antarctica LTER](https://pallter.marine.rutgers.edu/), a member of the Long Term Ecological Research Network. You may also learn more about the  research and methodology of this particular dataset: [Ecological sexual dimorphism and environmental variability within a community of Antarctic penguins (genus Pygoscelis)](https://doi.org/10.1371/journal.pone.0090081).
 
+![](./fig/lter_penguins.png)
+Artwork by [@allison_horst](https://allisonhorst.github.io/)
+
 > ## Data Moment: Documentation & Citation
 > 
 > ~~~
@@ -55,15 +58,16 @@ This dataset is hosted by [ Palmer Station Antarctica LTER](https://pallter.mari
 > 
 {: .datamoment}
 
-
-
-The dataset is stored as a comma separated value (CSV) file. Each row holds information for a date, and the columns represent:
+The dataset is stored as a comma separated value (CSV) file. Each row holds information for a date, and the attributes information can be found in the help:
 
 ~~~
 ?penguins
 ?penguins_raw
 ~~~
 {: .language-r}
+
+![](./fig/culmen_depth.png)
+Artwork by [@allison_horst](https://allisonhorst.github.io/)
 
 ### Reading the Data into R
 
@@ -101,13 +105,12 @@ penguins <- read.csv(path_to_file("penguins.csv"))
 ~~~
 {: .language-r}
 
-FIXME
-path-to-file
+If you have a csv file, you may use read_csv to create an object with it. `path_to_file()` is not nesessary to use `read_csv()`.
 
 When you execute `read_csv` on a data file, it looks through the first 1000 rows
 of each column and guesses its data type. For example, in this dataset,
-`read_csv()` reads `weight` as `col_double` (a numeric data type), and `species`
-as `col_character`. You have the option to specify the data type for a column
+`read_csv()` reads `flipper_length_mm` as `int` (a numeric data type), and `species`
+as `char`. You have the option to specify the data type for a column
 manually by using the `col_types` argument in `read_csv`.
 
 We can see the contents of the first few lines of the data by typing its
@@ -122,6 +125,25 @@ We can also extract the first few lines of this data using the function
 head(penguins)
 ~~~
 {: .language-r}
+
+~~~
+  species    island bill_length_mm bill_depth_mm
+1  Adelie Torgersen           39.1          18.7
+2  Adelie Torgersen           39.5          17.4
+3  Adelie Torgersen           40.3          18.0
+4  Adelie Torgersen             NA            NA
+5  Adelie Torgersen           36.7          19.3
+6  Adelie Torgersen           39.3          20.6
+
+ flipper_length_mm body_mass_g    sex year
+1               181        3750   male 2007
+2               186        3800 female 2007
+3               195        3250 female 2007
+4                NA          NA   <NA> 2007
+5               193        3450 female 2007
+6               190        3650   male 2007
+~~~
+{: .output}
 
 Unlike the `print()` function, `head()` returns the extracted data. You could
 use it to assign the first 100 rows of `penguins` to an object using
@@ -240,12 +262,7 @@ objects besides `data.frame`.
 > ## Data Moment: Stuctures
 > 
 > When we look at the stucture of the raw data,
-> we see that it is a tibble of 344 observations and 17 variables:
-> 
-> ~~~
-> tibble [344 × 17] (S3: tbl_df/tbl/data.frame)
-> ~~~
-> {: .output}
+> we see that it holds 344 observations and 17 variables:
 > 
 > 
 {: .datamoment}
@@ -372,15 +389,15 @@ names of the columns.
 > >
 > > ~~~
 > > ## 1.
-> > shorbirds_200 <- penguins[200, ]
+> > penguins_200 <- penguins[200, ]
 > > ## 2.
 > > # Saving `n_rows` to improve readability and reduce duplication
 > > n_rows <- nrow(penguins)
-> > shorbirds_last <- penguins[n_rows, ]
+> > penguins_last <- penguins[n_rows, ]
 > > ## 3.
-> > shorbirds_middle <-penguins[n_rows/2, ]
+> > penguins_middle <-penguins[n_rows/2, ]
 > > ## 4.
-> > shorbirds_head <- penguins[-(7:n_rows), ]
+> > penguins_head <- penguins[-(7:n_rows), ]
 > > ~~~
 > > {: .language-r}
 > {: .solution}
@@ -461,8 +478,6 @@ be able to tell just from the integer data. Factors, on the other hand, have
 this information built in. It is particularly helpful when there are many levels.
 
 
-
-
 > ### Challenge
 >
 > 1. Change the columns `species` and `island` in the `penguins` data frame into a
@@ -499,8 +514,6 @@ as.character(low_hi)
 ~~~
 {: .language-r}
 
-
-
 In some cases, you may have to convert factors where the levels appear as
 numbers (such as concentration levels or years) to a numeric vector. For
 instance, in one part of your analysis the years might need to be encoded as
@@ -516,7 +529,7 @@ Another method is to use the `levels()` function. Compare:
 
 
 ~~~
-year_fct <- factor(c(1970, 1950, 1960, 1980, 1990))
+year_fct <- factor(c(1991, 1992, 1993, 1994, 1995))
 as.numeric(year_fct)               # Wrong! And there is no warning...
 as.numeric(as.character(year_fct)) # Works...
 as.numeric(levels(year_fct))[year_fct]    # The recommended way.
@@ -553,7 +566,7 @@ as.numeric(as.character(year_fct))  # Works...
 
 
 ~~~
-[1] 1970 1950 1960 1980 1990
+[1] 1991 1992 1993 1994 1995
 ~~~
 {: .output}
 
@@ -567,7 +580,7 @@ as.numeric(levels(year_fct))[year_fct]  # The recommended way.
 
 
 ~~~
-[1] 1970 1950 1960 1980 1990
+[1] 1991 1992 1993 1994 1995
 ~~~
 {: .output}
 
@@ -583,61 +596,152 @@ vector `year_fct` inside the square brackets
 
 When your data is stored as a factor, you can get a
 quick glance at the number of observations represented by each factor
-level. Let's look at the levels of the low_hi variable:
+level. Let’s look at the number of males and females observed:
 
 ~~~
-[1] low  high low  high
-Levels: low high
+penguins$sex <- factor(penguins$sex)
+plot(penguins$sex)
 ~~~
-{: .output}
+{: .language-r}
 
+![](./fig/R-ecology-unnamed-chunk-27-1.png)
 
-We are able to change the value of a data observation. There may be some cases where this is necessary, such as  if missing data is not showing up on a visualization or if you'd like to adjust a column's variable.
+However, as we saw when we used summary(surveys$sex), there are 11 individuals for which the sex information hasn’t been recorded. To show them in the plot, we can turn the missing values into a factor level with the addNA() function. We will also have to give the new factor level a label. We are going to work with a copy of the sex column, so we’re not modifying the working copy of the data frame:
 
+~~~
+sex <- surveys$sex
+levels(sex)
+~~~
+{: .language-r}
 
-> ## Exercise
->
-> * Rename the levels of the factor to expand :
->   "No","Undetermined", and "Yes".
->
-> * Now that we have renamed the factor level to "Undetermined", can you
->   recreate the barplot such that "Undetermined" is last (after "Yes")?
->
-> > ## Solution
-> >
-> >
+~~~
+sex <- addNA(sex)
+levels(sex)
+~~~
+{: .language-r}
+
+~~~
+head(sex)
+~~~
+{: .language-r}
+
+~~~
+levels(sex)[3] <- "undetermined"
+levels(sex)
+~~~
+{: .language-r}
+
+Now we can plot the data again, using plot(sex).
+
+> ## Challenge: 
+> Rename “F” and “M” to “female” and “male” 
+> respectively.
+> Now that we have renamed the factor level to 
+> “undetermined”, can you recreate the barplot 
+> such that “undetermined” is first (before 
+> “female”)?
 > > ~~~
-> > ## Rename levels. Note we need to keep the original level ordering when renaming.
-> > levels(memb_assoc) <- c("No", "Undetermined", "Yes")
-> > ## Reorder levels. Note we need to use the new level names.
-> > memb_assoc <- factor(memb_assoc, levels = c("No", "Yes", "Undetermined"))
-> > plot(memb_assoc)
+> > levels(sex)[1:2] <- c("F", "M")
+> > sex <- factor(sex, levels = c("undetermined", "female", "male"))
+> > plot(sex)
 > > ~~~
 > > {: .language-r}
-> >
-> > FIXME: FIG
 > {: .solution}
 {: .challenge}
 
+> ### Challenge
+>
+> 1. We have seen how data frames are created when using the `read.csv()`, but
+>   they can also be created by hand with the `data.frame()` function.  There are
+>   a few mistakes in this hand-crafted `data.frame`, can you spot and fix them?
+>   Don't hesitate to experiment!
+>
+>     ~~~
+>     animal_data <- data.frame(animal = c("dog", "cat", "sea cucumber", "sea urchin"),
+>                               feel = c("furry", "squishy", "spiny"),
+>                               weight = c(45, 8 1.1, 0.8))
+>     ~~~
+>     {: .language-r}
+>
+>     ~~~
+>     ## Challenge:
+>     ##  There are a few mistakes in this hand-crafted `data.frame`,
+>     ##  can you spot and fix them? Don't hesitate to experiment!
+>     animal_data <- data.frame(animal = c(dog, cat, sea cucumber, sea urchin),
+>                               feel = c("furry", "squishy", "spiny"),
+>                               weight = c(45, 8 1.1, 0.8))
+>     ~~~
+>     {: .language-r}
+>
+> 2. Can you predict the class for each of the columns in the following example?
+>    Check your guesses using `str(country_climate)`:
+>      * Are they what you expected?  Why? Why not?
+>      * What would have been different if we had added `stringsAsFactors = FALSE` to this call?
+>      * What would you need to change to ensure that each column had the accurate data type?
+>
+>     ~~~
+>     country_climate <- data.frame(
+>            country = c("Canada", "Panama", "South Africa", "Australia"),
+>            climate = c("cold", "hot", "temperate", "hot/temperate"),
+>            temperature = c(10, 30, 18, "15"),
+>            northern_hemisphere = c(TRUE, TRUE, FALSE, "FALSE"),
+>            has_kangaroo = c(FALSE, FALSE, FALSE, 1)
+>            )
+>     ~~~
+>     {: .language-r}
+>
+>    ~~~
+>    ## Challenge:
+>    ##   Can you predict the class for each of the columns in the following
+>    ##   example?
+>    ##   Check your guesses using `str(country_climate)`:
+>    ##   * Are they what you expected? Why? why not?
+>    ##   * What would have been different if we had added `stringsAsFactors = FALSE`
+>    ##     to this call?
+>    ##   * What would you need to change to ensure that each column had the
+>    ##     accurate data type?
+>    country_climate <- data.frame(country = c("Canada", "Panama", "South Africa", "Australia"),
+>                                   climate = c("cold", "hot", "temperate", "hot/temperate"),
+>                                   temperature = c(10, 30, 18, "15"),
+>                                   northern_hemisphere = c(TRUE, TRUE, FALSE, "FALSE"),
+>                                   has_kangaroo = c(FALSE, FALSE, FALSE, 1))
+>    ~~~
+>    {: .language-r}
+>
+>
+>
+>
+> >   ## Answers
+> >   ## * missing quotations around the names of the animals
+> >   ## * missing one entry in the "feel" column (probably for one of the furry animals)
+> >   ## * missing one comma in the weight column
+> >
+> >
+> >   
+> >   ## * `country`, `climate`, `temperature`, and `northern_hemisphere` are
+> >   ##    factors; `has_kangaroo` is numeric.
+> >   ## * using `stringsAsFactors=FALSE` would have made them character instead of
+> >   ##   factors
+> >   ## * removing the quotes in temperature, northern_hemisphere, and replacing 1
+> >   ##   by TRUE in the `has_kangaroo` column would probably what was originally
+> >   ##   intended.
+> >   
+> >
+> {: .solution}
+{: .challenge}
+
+
 ## Formatting Dates
 
-One of the most common issues that new (and experienced!) R users have is
-converting date and time information into a variable that is appropriate and
-usable during analyses. A best
-practice for dealing with date data is to ensure that each component of your
-date is available as a separate variable. In our dataset, we have a
-column `interview_date` which contains information about the
-year, month, and day that the interview was conducted. Let's
-convert those dates into three separate columns.
+A common issue that new (and experienced!) R users have is converting date and time information into a variable that is suitable for analyses. One way to store date information is to store each component of the date in a separate column. Using str(), we can confirm that our data frame does indeed have a separate column for day, month, and year, and that each of these columns contains integer values.
 
 
 ~~~
-str(interviews)
+str(penguins)
 ~~~
 {: .language-r}
-We are going to use the package **`lubridate`**, which is included in the
-**`tidyverse`** installation but not loaded by default, so we have to load
-it explicitly with `library(lubridate)`.
+
+We are going to use the ymd() function from the package lubridate (which belongs to the tidyverse; learn more [here](https://www.tidyverse.org/)). lubridate gets installed as part as the tidyverse installation. When you load the tidyverse (library(tidyverse)), the core packages (the packages used in most data analyses) get loaded. lubridate however does not belong to the core tidyverse, so you have to load it explicitly with library(lubridate)
 
 Start by loading the required package:
 
@@ -647,78 +751,111 @@ library(lubridate)
 ~~~
 {: .language-r}
 
-The lubridate function `ymd()` takes a vector representing year, month, and day,
-and converts it to a `Date` vector. `Date` is a class of data recognized by R as
-being a date and can be manipulated as such. The argument that the function
-requires is flexible, but, as a best practice, is a character vector formatted
-as "YYYY-MM-DD".
+The lubridate package has many useful functions for working with dates. These can help you extract dates from different string representations, convert between timezones, calculate time differences and more. You can find an overview of them in the [lubridate cheat sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/lubridate.pdf).
 
-Let's extract our `interview_date` column and inspect the structure:
-
+Let’s create an object and inspect the structure:
 
 ~~~
-dates <- interviews$interview_date
-str(dates)
+str("2022-01-01")
 ~~~
 {: .language-r}
 
-
-
 ~~~
- POSIXct[1:131], format: "2016-11-17" "2016-11-17" "2016-11-17" "2016-11-17" "2016-11-17" ...
+chr "2022-01-01"
 ~~~
 {: .output}
 
+Note that R reads this as a character. Now let’s paste the year, month, and day separately - we get the same result:
+
+~~~
+# sep indicates the character to use to separate each component
+str(paste("2022", "01", "01", sep = "-"))
+~~~
+{: .language-r}
+
+~~~
+chr "2022-1-1"
+~~~
+{: .output}
+
+Here we will use the function ymd(), which takes a vector representing year, month, and day, and converts it to a Date vector. Date is a class of data recognized by R as being a date and can be manipulated as such. The argument that the function requires is flexible, but, as a best practice, is a character vector formatted as “YYYY-MM-DD”.
+
+~~~
+my_date <- ymd(paste("2022", "01", "01", sep = "-"))
+str(my_date)
+~~~
+{: language-r}
+
+Now lets look at the penguines_raw dataset and extract the column `Date Egg`.
+
+~~~
+egg_dates <- penguins_raw$`Date Egg`
+str(egg_dates)
+~~~
+{: .language-r}
+
+Let's extract our `Date Egg` column and inspect the structure.
+
+> ## What is "Date Egg"?
+> 
+> ~~~
+> ?penguins_raw
+> ~~~
+> {: .language-r}
+> 
+{: .callout}
+
+We are able to pull the year, month, and day from the date values:
+
+~~~
+egg_yr <- year(egg_dates)
+egg_mo <- month(egg_dates)
+egg_day <- day(egg_dates)
+~~~
+{: .language-r}
+
 When we imported the data in R, `read_csv()` recognized that this column
-contained date information. We can now use the `day()`, `month()` and  `year()`
+contained date information. We can use the `day()`, `month()` and  `year()`
 functions to extract this information from the date, and create new columns in
 our data frame to store it:
 
-
-
 ~~~
-interviews$day <- day(dates)
-interviews$month <- month(dates)
-interviews$year <- year(dates)
-interviews
+# we can create dataframes
+egg_dates_df <- data.frame(year = egg_yr, month = egg_mo, day = egg_day)
+
+egg_dates_df
 ~~~
 {: .language-r}
 
 
-
 ~~~
-# A tibble: 131 × 17
-   key_ID village interview_date      no_membrs years_liv respondent_wall… rooms
-    <dbl> <chr>   <dttm>                  <dbl>     <dbl> <chr>            <dbl>
- 1      1 God     2016-11-17 00:00:00         3         4 muddaub              1
- 2      1 God     2016-11-17 00:00:00         7         9 muddaub              1
- 3      3 God     2016-11-17 00:00:00        10        15 burntbricks          1
- 4      4 God     2016-11-17 00:00:00         7         6 burntbricks          1
- 5      5 God     2016-11-17 00:00:00         7        40 burntbricks          1
- 6      6 God     2016-11-17 00:00:00         3         3 muddaub              1
- 7      7 God     2016-11-17 00:00:00         6        38 muddaub              1
- 8      8 Chirod… 2016-11-16 00:00:00        12        70 burntbricks          3
- 9      9 Chirod… 2016-11-16 00:00:00         8         6 burntbricks          1
-10     10 Chirod… 2016-12-16 00:00:00        12        23 burntbricks          5
-# … with 121 more rows, and 10 more variables: memb_assoc <chr>,
-#   affect_conflicts <chr>, liv_count <dbl>, items_owned <chr>, no_meals <dbl>,
-#   months_lack_food <chr>, instanceID <chr>, day <int>, month <dbl>,
-#   year <dbl>
+    year month day
+1   2007    11  11
+2   2007    11  11
+3   2007    11  16
+4   2007    11  16
+5   2007    11  16
+...
 ~~~
 {: .output}
 
-Notice the three new columns at the end of our data frame.
+These character vectors can be used as the argument for ymd():
 
-In our example above, the `interview_date` column was read in correctly as a
+~~~
+ymd(paste(egg_dates_df$year, egg_dates_df$month, egg_dates_df$day, sep = "-"))
+~~~
+{: .language-r}
+
+
+In our example above, the `Date Egg` column was read in correctly as a
 `Date` variable but generally that is not the case. Date columns are often read
 in as `character` variables and one can use the `as_date()` function to convert
 them to the appropriate `Date/POSIXct`format.
 
 Let's say we have a vector of dates in character format:
 
-
 ~~~
-char_dates <- c("7/31/2012", "8/9/2014", "4/30/2016")
+char_dates <- c("01/01/2020", "02/02/2020", "03/03/2020")
 str(char_dates)
 ~~~
 {: .language-r}
@@ -726,7 +863,7 @@ str(char_dates)
 
 
 ~~~
- chr [1:3] "7/31/2012" "8/9/2014" "4/30/2016"
+chr [1:3] "01/01/2020" "02/02/2020" "03/03/2020"
 ~~~
 {: .output}
 
@@ -760,7 +897,7 @@ as_date(char_dates, format = "%m/%d/%y")
 
 
 ~~~
-[1] "2020-07-31" "2020-08-09" "2020-04-30"
+[1] "2020-01-01" "2020-02-02" "2020-03-03"
 ~~~
 {: .output}
 
@@ -794,16 +931,5 @@ variables to date.
 mdy(char_dates)
 ~~~
 {: .language-r}
-
-
-
-~~~
-[1] "2012-07-31" "2014-08-09" "2016-04-30"
-~~~
-{: .output}
-
-## Dataset Citation
-
-Dugan, J. 2021. SBC LTER: Beach: Time series of abundance of birds and stranded kelp on selected beaches, ongoing since 2008 ver 10. Environmental Data Initiative. https://doi.org/10.6073/pasta/06c6b9983a5f0a44349e027a002f5040. Accessed 2022-02-07.
 
 {% include links.md %}
