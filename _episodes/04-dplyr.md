@@ -164,13 +164,14 @@ penguins_sml
 Note that the final data frame is the leftmost part of this expression.
 
 > ## Challenge
+> 
 > Create a new data frame from the `penguins` data that meets the 
 > following criteria: contains only the `species` column and a new 
 > column called `flipper_length_mm` containing the length of the penguin flipper values 
 > (currently in mm) converted to centimeters. In this `flipper_length_mm` 
 > column, there are no NAs and all values are less than 200.
 > Hint: think about how the commands should be ordered to produce this data frame!
-> > 
+> > ## Solution
 > > ~~~
 > > penguins_flipper_length_mm <- penguins %>%
 > >     filter(!is.na(penguins_flipper_length_mm)) %>%
@@ -179,8 +180,8 @@ Note that the final data frame is the leftmost part of this expression.
 > >     select(species, flipper_length_mm)
 > > ~~~
 > > {: .language-r}
-> {: .challenge}
-{: .output}
+> {: .solution}
+{: .challenge}
 
 ## Split-apply-combine data analysis and the `summarize()` function
 Many data analysis tasks can be approached using the split-apply-combine paradigm: split the data into groups, apply some analysis to each group, and then combine the results. Key functions of dplyr for this workflow are `group_by()` and `summarize()`.
@@ -351,6 +352,7 @@ From the table above, we may learn that, for instance, there are 75 observations
 > > ~~~
 > > {: .language-r}
 > {: .solution}
+{: .challenge}
 
 ## Reshaping with pivot_longer and pivot_wider
 
@@ -475,7 +477,7 @@ penguins_wide %>%
 > data set with a column for bill_length_mm and body_mass_g. Hint: You only 
 > need to specify the names and values columns for pivot_wider().
 > 
-> 
+> > ## Solution
 > > 1.
 > > ~~~
 > > penguins_wide_species <- penguins %>%
