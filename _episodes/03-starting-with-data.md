@@ -36,7 +36,7 @@ In this palmerpenguins package, there are two datasets. 'penguins' is a simplifi
 
 This dataset is hosted by [ Palmer Station Antarctica LTER](https://pallter.marine.rutgers.edu/), a member of the Long Term Ecological Research Network. You may also learn more about the  research and methodology of this particular dataset: [Ecological sexual dimorphism and environmental variability within a community of Antarctic penguins (genus Pygoscelis)](https://doi.org/10.1371/journal.pone.0090081).
 
-![](./fig/lter_penguins.png)
+![](../fig/lter_penguins.png)
 Artwork by [@allison_horst](https://allisonhorst.github.io/)
 
 > ## Data Moment: Documentation & Citation
@@ -66,7 +66,7 @@ The dataset is stored as a comma separated value (CSV) file. Each row holds info
 ~~~
 {: .language-r}
 
-![](./fig/culmen_depth.png)
+![](../fig/culmen_depth.png)
 Artwork by [@allison_horst](https://allisonhorst.github.io/)
 
 ### Reading the Data into R
@@ -478,7 +478,7 @@ be able to tell just from the integer data. Factors, on the other hand, have
 this information built in. It is particularly helpful when there are many levels.
 
 
-> ### Challenge
+> ## Challenge
 >
 > 1. Change the columns `species` and `island` in the `penguins` data frame into a
 >    factor.
@@ -500,7 +500,7 @@ this information built in. It is particularly helpful when there are many levels
 > ## * There are 152 adelie penguines in the `species` column.
 > ## * There are 3 unique values in the `island` column
 >
-
+{: .challenge}
 
 
 ### Converting factors
@@ -640,16 +640,19 @@ Now we can plot the data again, using plot(sex).
 > “undetermined”, can you recreate the barplot 
 > such that “undetermined” is first (before 
 > “female”)?
+> 
+> > ## Solution
 > > ~~~
 > > levels(sex)[1:2] <- c("F", "M")
 > > sex <- factor(sex, levels = c("undetermined", "female", "male"))
 > > plot(sex)
 > > ~~~
 > > {: .language-r}
+> >
 > {: .solution}
 {: .challenge}
 
-> ### Challenge
+> ## Challenge
 >
 > 1. We have seen how data frames are created when using the `read.csv()`, but
 >   they can also be created by hand with the `data.frame()` function.  There are
@@ -708,15 +711,11 @@ Now we can plot the data again, using plot(sex).
 >    ~~~
 >    {: .language-r}
 >
->
->
->
-> >   ## Answers
+> >   ## Solution
+> > 
 > >   ## * missing quotations around the names of the animals
 > >   ## * missing one entry in the "feel" column (probably for one of the furry animals)
 > >   ## * missing one comma in the weight column
-> >
-> >
 > >   
 > >   ## * `country`, `climate`, `temperature`, and `northern_hemisphere` are
 > >   ##    factors; `has_kangaroo` is numeric.
@@ -725,7 +724,6 @@ Now we can plot the data again, using plot(sex).
 > >   ## * removing the quotes in temperature, northern_hemisphere, and replacing 1
 > >   ##   by TRUE in the `has_kangaroo` column would probably what was originally
 > >   ##   intended.
-> >   
 > >
 > {: .solution}
 {: .challenge}
