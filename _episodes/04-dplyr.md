@@ -320,6 +320,8 @@ From the table above, we may learn that, for instance, there are 75 observations
 > 3. What was the heaviest animal measured in each year? Return the 
 > columns year, island, species, and body_mass_g.
 > 
+> > ## Solution
+> > 
 > > 1.
 > > ~~~
 > > penguins %>%
@@ -351,6 +353,7 @@ From the table above, we may learn that, for instance, there are 75 observations
 > >     arrange(year)
 > > ~~~
 > > {: .language-r}
+> > 
 > {: .solution}
 {: .challenge}
 
@@ -509,6 +512,9 @@ penguins_wide %>%
 > >   group_by(year, measurement, island) %>%
 > >   summarize(mean_value = mean(value, na.rm=TRUE)) %>%
 > >   pivot_wider(names_from = measurement, values_from = mean_value)
+> >   ~~~
+> > {: .language-r}
+> > 
 > {: .solution}
 {: .challenge}
 
