@@ -497,8 +497,8 @@ this information built in. It is particularly helpful when there are many levels
 > ~~~
 > {: .language-r}
 >
-> ## * There are 152 adelie penguines in the `species` column.
-> ## * There are 3 unique values in the `island` column
+> * There are 152 adelie penguines in the `species` column.
+> * There are 3 unique values in the `island` column
 >
 {: .challenge}
 
@@ -713,17 +713,17 @@ Now we can plot the data again, using plot(sex).
 >
 > >   ## Solution
 > > 
-> >   ## * missing quotations around the names of the animals
-> >   ## * missing one entry in the "feel" column (probably for one of the furry animals)
-> >   ## * missing one comma in the weight column
+> >    * missing quotations around the names of the animals
+> >    * missing one entry in the "feel" column (probably for one of the furry animals)
+> >    * missing one comma in the weight column
 > >   
-> >   ## * `country`, `climate`, `temperature`, and `northern_hemisphere` are
-> >   ##    factors; `has_kangaroo` is numeric.
-> >   ## * using `stringsAsFactors=FALSE` would have made them character instead of
-> >   ##   factors
-> >   ## * removing the quotes in temperature, northern_hemisphere, and replacing 1
-> >   ##   by TRUE in the `has_kangaroo` column would probably what was originally
-> >   ##   intended.
+> >    * `country`, `climate`, `temperature`, and `northern_hemisphere` are
+> >       factors; `has_kangaroo` is numeric.
+> >    * using `stringsAsFactors=FALSE` would have made them character instead of
+> >      factors
+> >    * removing the quotes in temperature, northern_hemisphere, and replacing 1
+> >      by TRUE in the `has_kangaroo` column would probably what was originally
+> >      intended.
 > >
 > {: .solution}
 {: .challenge}
