@@ -3,7 +3,9 @@ layout: lesson
 root: .  # Is the only page that doesn't follow the pattern /:path/index.html
 permalink: index.html  # Is the only page that doesn't follow the pattern /:path/index.html
 ---
-FIXME: home page introduction
+
+This lesson is UCSB Carpentry's customized lesson of the Carpentries' canonical lesson [
+Data Analysis and Visualization in R for Ecologists](https://datacarpentry.org/R-ecology-lesson/). Main differences are in what data set is used, and to incorporate research data mgmt practices and data literacy points.
 
 <!-- this is an html comment -->
 
@@ -11,7 +13,7 @@ FIXME: home page introduction
 
 > ## Prerequisites
 >
-> FIXME
+> No prior programming experience will be expected in this lesson. 
 {: .prereq}
 
 {% include links.md %}
