@@ -479,14 +479,15 @@ this information built in. It is particularly helpful when there are many levels
 
 
 > ## Challenge
->
+> 
 > 1. Change the columns `species` and `island` in the `penguins` data frame into a
 >    factor.
->
+> 
 > 2. Using the functions you learned before, can you find out...
->
->      * How many rows contain Adelie species?
->      * How many different islands did the research record at?
+> How many rows contain Adelie species?
+> 
+> How many different islands did the research record at?
+> 
 > > ## Solution
 > > ~~~
 > > penguins$species <- factor(penguins$species)
@@ -653,19 +654,19 @@ Now we can plot the data again, using plot(sex).
 {: .challenge}
 
 > ## Challenge
->
+> 
 > 1. We have seen how data frames are created when using the `read.csv()`, but
 >   they can also be created by hand with the `data.frame()` function.  There are
 >   a few mistakes in this hand-crafted `data.frame`, can you spot and fix them?
 >   Don't hesitate to experiment!
->
+> 
 >     ~~~
 >     animal_data <- data.frame(animal = c("dog", "cat", "sea cucumber", "sea urchin"),
 >                               feel = c("furry", "squishy", "spiny"),
 >                               weight = c(45, 8 1.1, 0.8))
 >     ~~~
 >     {: .language-r}
->
+> 
 >     ~~~
 >     ## Challenge:
 >     ##  There are a few mistakes in this hand-crafted `data.frame`,
@@ -675,13 +676,13 @@ Now we can plot the data again, using plot(sex).
 >                               weight = c(45, 8 1.1, 0.8))
 >     ~~~
 >     {: .language-r}
->
+> 
 > 2. Can you predict the class for each of the columns in the following example?
 >    Check your guesses using `str(country_climate)`:
 >      * Are they what you expected?  Why? Why not?
 >      * What would have been different if we had added `stringsAsFactors = FALSE` to this call?
 >      * What would you need to change to ensure that each column had the accurate data type?
->
+> 
 >     ~~~
 >     country_climate <- data.frame(
 >            country = c("Canada", "Panama", "South Africa", "Australia"),
@@ -692,7 +693,7 @@ Now we can plot the data again, using plot(sex).
 >            )
 >     ~~~
 >     {: .language-r}
->
+> 
 >    ~~~
 >    ## Challenge:
 >    ##   Can you predict the class for each of the columns in the following
@@ -710,8 +711,8 @@ Now we can plot the data again, using plot(sex).
 >                                   has_kangaroo = c(FALSE, FALSE, FALSE, 1))
 >    ~~~
 >    {: .language-r}
->
-> >   ## Solution
+> 
+> > ## Solution
 > > 
 > >    * missing quotations around the names of the animals
 > >    * missing one entry in the "feel" column (probably for one of the furry animals)
