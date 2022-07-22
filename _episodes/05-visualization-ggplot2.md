@@ -288,10 +288,216 @@ daily_counts_graph
 {: .language-r}
 
 ## Faceting
-ggplot has a special technique called faceting that allows the user to split one plot into multiple plots based on a factor included in the dataset. We will use it to make a time series plot for each genus:
+ggplot has a special technique called faceting that allows the user to split one plot into multiple plots based on a factor included in the dataset. We will use it to look at the bill features of each species:
 
 ~~~
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  facet_wrap(facets = vars(sex))
 ~~~
 {: .language-r}
+
+Notice how the Nan values of sex shows up on our plot. Le'ts create a new dataframe to exclude those points, and look at the plot again.
+
+~~~
+penguins_complete <- penguins %>%
+  filter(!is.na(sex))
+~~~
+{: .language-r}
+
+~~~
+ggplot(data = penguins_complete, aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  facet_wrap(facets = vars(sex))
+~~~
+{: .language-r}
+
+We can also facet both by sex and island:
+
+~~~
+ggplot(data = penguins_complete,
+       mapping = aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  facet_grid(rows = vars(sex), cols =  vars(island))
+~~~
+{: .language-r}
+
+You can also organise the panels only by rows (or only by columns):
+
+~~~
+# One column, facet by rows
+ggplot(data = penguins_complete,
+       mapping = aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  facet_grid(rows = vars(island))
+~~~
+{: .language-r}
+
+~~~
+# One row, facet by column
+ggplot(data = penguins_complete,
+       mapping = aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  facet_grid(cols = vars(island))
+~~~
+{: .language-r}
+
+## Available pallettes
+
+~~~
+install.packages("RColorBrewer")
+library(RColorBrewer)
+
+RColorBrewer::display.brewer.all()
+RColorBrewer::display.brewer.all(colorblindFriendly = TRUE)
+~~~
+{: .language-r}
+
+## ggplot2 themes
+Usually plots with white background look more readable when printed. Every single component of a ggplot graph can be customized using the generic theme() function, as we will see below. However, there are pre-loaded themes available that change the overall appearance of the graph without much effort.
+
+For example, we can change our previous graph to have a simpler white background using the theme_bw() function:
+
+~~~
+ggplot(data = penguins_complete,
+       mapping = aes(x = species, fill = sex)) +
+  geom_bar(position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +
+  facet_grid(cols = vars(island)) + 
+  labs(title = "Species Count over Islands",
+       x = "Penguin Species",
+       y = "Number of individuals") +
+  theme_bw() 
+~~~
+{: .language-r}
+
+In addition to theme_bw(), which changes the plot background to white, ggplot2 comes with several other themes which can be useful to quickly change the look of your visualization. The complete list of themes is available at [https://ggplot2.tidyverse.org/reference/ggtheme.html](https://ggplot2.tidyverse.org/reference/ggtheme.html). `theme_minimal()` and `theme_light()` are popular, and `theme_void()` can be useful as a starting point to create a new hand-crafted theme.
+
+The [ggthemes](https://ggplot2.tidyverse.org/reference/ggtheme.html) package provides a wide variety of options.
+
+> ## Challenge
+> Use what you just to create a plot that depicts the count of each species, delineated by sex, at each island.
+> 
+> > ## (A) Solution
+> > ~~~
+> > ggplot(data = penguins_complete,
+> >        mapping = aes(x = species, fill = sex)) +
+> >   geom_bar(position = "dodge") +
+> >   scale_fill_brewer(palette = "Set2") +
+> >   facet_grid(cols = vars(island))
+> > ~~~
+> > {: .language-r}
+> {: .solution}
+{: .challenge}
+
+##v Customization
+Take a look at the [ggplot2 cheat sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization-2.1.pdf), and think of ways you could improve the plot.
+
+Now, let’s change names of axes to something more informative and add a title to the figure:
+
+~~~
+ggplot(data = penguins_complete,
+       mapping = aes(x = species, fill = sex)) +
+  geom_bar(position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +
+  facet_grid(cols = vars(island)) + 
+  labs(title = "Species Count over Islands",
+       x = "Penguin Species",
+       y = "Number of individuals") +
+  theme_bw()
+~~~
+{: .language-r}
+
+The axes have more informative names, but their readability can be improved by increasing the font size. This can be done with the generic theme() function:
+
+~~~
+ggplot(data = penguins_complete,
+       mapping = aes(x = species, fill = sex)) +
+  geom_bar(position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +
+  facet_grid(cols = vars(island)) + 
+  labs(title = "Species Count over Islands",
+       x = "Penguin Species",
+       y = "Number of individuals") +
+  theme_bw() + 
+  theme(text=element_text(size = 12))
+~~~
+{: .language-r}
+
+Note that it is also possible to change the fonts of your plots. If you are on Windows, you may have to install the [extrafont package](https://github.com/wch/extrafont), and follow the instructions included in the README for this package.
+
+After our manipulations, you may notice that the values on the x-axis are still not properly readable. Let’s change the orientation of the labels and adjust them vertically and horizontally so they don’t overlap. You can use a 90 degree angle, or experiment to find the appropriate angle for diagonally oriented labels. We can also modify the facet label text `(strip.text)` to italicize the genus names:
+
+~~~
+ggplot(data = penguins_complete,
+       mapping = aes(x = species, fill = sex)) +
+  geom_bar(position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +
+  facet_grid(cols = vars(island)) + 
+  labs(title = "Species Count over Islands",
+     x = "Penguin Species",
+     y = "Number of individuals") +
+  theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 90, hjust = 0.5, vjust = 0.5),
+        axis.text.y = element_text(colour = "grey20", size = 12),
+        strip.text = element_text(face = "italic"), 
+        panel.background = element_rect(fill = "white", color= "grey"),
+        text = element_text(size = 12))
+~~~
+{: .language-r}
+
+If you like the changes you created better than the default theme, you can save them as an object to be able to easily apply them to other plots you may create:
+
+~~~
+grey_theme <- theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 90, hjust = 0.5, vjust = 0.5), 
+                      axis.text.y = element_text(colour = "grey20", size = 12),
+                      strip.text = element_text(face = "italic"), 
+                      panel.background = element_rect(fill = "white", color= "grey"),
+                      text = element_text(size = 12))
+~~~
+{: .language-r}
+
+~~~
+ggplot(data = penguins_complete,
+       mapping = aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  facet_grid(cols = vars(island)) +
+  grey_theme
+~~~
+{: .language-r}
+
+> ## Challenge
+> With all of this information in hand, please take another five minutes to either improve one of the plots generated in this exercise or create an informative graph of your own. Use the RStudio ggplot2 cheat sheet for inspiration.
+> 
+> Here are some ideas:
+> 
+> See if you can change the shape of the points.
+> Can you find a way to change the name of the legend? What about its labels?
+> Try using a different color palette (see [https://www.cookbook-r.com/Graphs/Colors_(ggplot2)/)](https://www.cookbook-r.com/Graphs/Colors_(ggplot2)/).
+{: .challenge}
+
+## Exporting plots
+After creating your plot, you can save it to a file in your favorite format. The Export tab in the Plot pane in RStudio will save your plots at low resolution, which will not be accepted by many journals and will not scale well for posters. The [ggplot2 extensions website](https://exts.ggplot2.tidyverse.org/) provides a list of packages that extend the capabilities of `ggplot2`, including additional themes.
+
+Instead, use the `ggsave()` function, which allows you to easily change the dimension and resolution of your plot by adjusting the appropriate arguments (`width`, `height` and `dpi`):
+
+~~~
+island_counts <- ggplot(data = penguins_complete,
+                  mapping = aes(x = species, fill = sex)) +
+  geom_bar(position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +
+  facet_grid(cols = vars(island)) + 
+  labs(title = "Species Count over Islands",
+       x = "Penguin Species",
+       y = "Number of individuals") +
+  grey_theme
+~~~
+{: .language-r}
+
+~~~
+ggsave("island_counts.png", island_counts, width = 10, dpi = 300)
+~~~
+{: .language-r}
+
+Note: The parameters width and height also determine the font size in the saved plot.
 
 {% include links.md %}
