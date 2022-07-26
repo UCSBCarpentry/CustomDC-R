@@ -3,7 +3,7 @@ title: "Manipulating, analyzing and exporting data with tidyverse"
 teaching: 50
 exercises: 30
 questions:
-- "What is a are dplyr and tidyr?"
+- "What are dplyr and tidyr?"
 - "How can I select columns and filter rows?"
 - "How can I use commands together"
 - "How to export data?"
@@ -167,17 +167,17 @@ Note that the final data frame is the leftmost part of this expression.
 > 
 > Create a new data frame from the `penguins` data that meets the 
 > following criteria: contains only the `species` column and a new 
-> column called `flipper_length_mm` containing the length of the penguin flipper values 
-> (currently in mm) converted to centimeters. In this `flipper_length_mm` 
-> column, there are no NAs and all values are less than 200.
+> column called `flipper_length_cm` containing the length of the penguin flipper values 
+> (currently in mm) converted to centimeters. In this `flipper_length_cm` 
+> column, there are no NAs and all values are less than 20.
 > Hint: think about how the commands should be ordered to produce this data frame!
 > > ## Solution
 > > ~~~
 > > penguins_flipper_length_mm <- penguins %>%
 > >     filter(!is.na(penguins_flipper_length_mm)) %>%
-> >     mutate(flipper_length_mm = penguins_flipper_length_mm / 10) %>%
-> >     filter(flipper_length_mm < 200) %>%
-> >     select(species, flipper_length_mm)
+> >     mutate(flipper_length_cm = penguins_flipper_length_mm / 10) %>%
+> >     filter(flipper_length_cm < 20) %>%
+> >     select(species, flipper_length_cm)
 > > ~~~
 > > {: .language-r}
 > {: .solution}
