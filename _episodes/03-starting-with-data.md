@@ -39,7 +39,7 @@ This dataset is hosted by [ Palmer Station Antarctica LTER](https://pallter.mari
 ![](../fig/lter_penguins.png)
 Artwork by [@allison_horst](https://allisonhorst.github.io/)
 
-> ## Data Moment: Documentation & Citation
+> ## Data Moment: Packages Citation
 > 
 > To get the package's citation for publication, we can use the `citation()` function and input the name of the package, `"palmerpenguins"`.
 > 
@@ -48,9 +48,9 @@ Artwork by [@allison_horst](https://allisonhorst.github.io/)
 > ~~~
 > {: .language-r}
 > 
-> Data citation increases reproducibility, which benefits both data users and producers. Along with getting the proper credit, citations helps data producers keep a bibliographic record of publications and usage which references the cited data.
+> Citation increases reproducibility, which benefits both users and producers. Along with getting the proper credit, citations helps producers keep a bibliographic record of publications and usage which references the cited tools and data.
 > 
-> Because datasets are easier to find with consistent and proper data citation, this practice also encourages reuse of the data for new studies.
+> Because datasets are easier to find with consistent, proper citation of packages and data citation, this practice also encourages reuse of the data for new studies.
 > 
 > This data was originally published in:
 > 
