@@ -41,16 +41,18 @@ Artwork by [@allison_horst](https://allisonhorst.github.io/)
 
 > ## Data Moment: Documentation & Citation
 > 
+> To get the package's citation for publication, we can use the `citation()` function and input the name of the package, `"palmerpenguins"`.
+> 
 > ~~~
 > citation("palmerpenguins")
 > ~~~
 > {: .language-r}
 > 
-> Data use information from Gorman et al. (2014): 
-> “Individuals interested in using these data are expected to follow the US LTER Network’s Data Access Policy, 
-> Requirements and Use Agreement: [https://lternet.edu/data-access-policy/.](https://lternet.edu/data-access-policy/)”
+> Data citation increases reproducibility, which benefits both data users and producers. Along with getting the proper credit, citations helps data producers keep a bibliographic record of publications and usage which references the cited data.
 > 
-> Data originally published in:
+> Because datasets are easier to find with consistent and proper data citation, this practice also encourages reuse of the data for new studies.
+> 
+> This data was originally published in:
 > 
 > Gorman KB, Williams TD, Fraser WR (2014). Ecological sexual 
 > dimorphism and environmental variability within a community of Antarctic penguins (genus Pygoscelis). PLoS ONE 9(3):e90081. 
@@ -929,5 +931,11 @@ variables to date.
 mdy(char_dates)
 ~~~
 {: .language-r}
+
+## Data Package Citation
+
+Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer
+Archipelago (Antarctica) penguin data. R package version 0.1.0.
+[https://allisonhorst.github.io/palmerpenguins/](https://allisonhorst.github.io/palmerpenguins/)
 
 {% include links.md %}
