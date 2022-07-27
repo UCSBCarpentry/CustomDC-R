@@ -171,6 +171,31 @@ ggplot(data = penguins, mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
 ~~~
 {: .language-r}
 
+## Colors are a Tool
+
+Different data scales benefit from different palettes.
+We will generally find three palettes:
+
+Qualitative -- when the data does not have an order of magnitude, so each color is distinct.
+This is appropriate for visualizations with categorical variables that are unrelated to one each other.
+
+Sequential -- when data values are measured along a sequential scale, such as values range from low to high, 0 to 5 stars, or centrality scores between 0 to 1.
+
+Divergent -- If variables sit on a spectrum, where we have two "extremes" and a "neutral" or pivotal value in the middle, such as cold to hot.
+Data represented by a divergent palette uses one color on one end of the spectrum and a visually different, distinct color on the other end.
+A visually neutral color is used in the middle.
+
+~~~
+#install.packages("RColorBrewer")
+library("RColorBrewer")
+
+ggplot(data= filter(surveys_complete, year > 1980 & genus == "Chaetodipus"),
+       mapping= aes(x= year, fill= sex)) + 
+  geom_bar() +
+  scale_fill_brewer(palette="Set2")
+~~~
+{: .language-r}
+
 ## Boxplot
 We can use boxplots to visualize the distribution of weight within each species:
 
