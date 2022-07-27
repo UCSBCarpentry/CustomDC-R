@@ -59,11 +59,11 @@ The package `tidyr` addresses the common problem of wanting to reshape your data
 
 To learn more about `dplyr` and `tidyr` after the workshop, you may want to check out this [handy data transformation with dplyr cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf) and this one about [tidyr](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-import.pdf).
 
-As before, we’ll read in our data using the `read_csv()` function from the tidyverse package `readr`.
+As before, we’ll load in our data package using the `library()` and data() functions.
 
 ~~~
 library(palmerpenguins)
-penguins <- read.csv(path_to_file("penguins.csv"))
+data(penguins)
 ~~~
 {: .language-r}
 
@@ -75,7 +75,7 @@ str(penguins)
 
 ~~~
 ## preview the data
-view(penguins)
+View(penguins)
 ~~~
 {: .language-r}
 
@@ -163,6 +163,50 @@ penguins_sml
 
 Note that the final data frame is the leftmost part of this expression.
 
+## Mutate
+
+Frequently you’ll want to create new columns based on the values in existing columns, for example to do unit conversions, or to find the ratio of values in two columns. For this we’ll use `mutate()`.
+
+To create a new column that reads body mass in in kilogram:
+
+~~~
+penguins %>%
+  mutate(body_mass_kg = body_mass_g / 1000)
+~~~
+{: .language-r}
+
+You can also create a second new column based on the first new column within the same call of `mutate()`:
+
+~~~
+penguins %>%
+  mutate(body_mass_kg = body_mass_g / 1000, 
+         body_mass_lb = body_mass_kg * 2.2)
+~~~
+{: .language-r}
+
+If this runs off your screen and you just want to see the first few rows, you can use a pipe to view the `head()` of the data. (Pipes work with non-`dplyr` functions, too, as long as the `dplyr` or `magrittr` package is loaded).
+
+~~~
+penguins %>%
+  mutate(body_mass_kg = body_mass_g / 1000, 
+         body_mass_lb = body_mass_kg * 2.2) %>%
+  head()
+~~~
+{: .language-r}
+
+In the first few rows of the output we see some `NA`'s, so if we wanted to remove those we could insert a `filter()` in the chain:
+
+~~~
+penguins %>%
+filter(!is.na(body_mass_g)) %>%
+  mutate(body_mass_kg = body_mass_g / 1000, 
+         body_mass_lb = body_mass_kg * 2.2) %>%
+  head()
+~~~
+{: .language-r}
+
+`is.na()` is a function that determines whether something is an `NA`. The `!` symbol negates the result, so we’re asking for every row where weight is *not* an `NA`.
+
 > ## Challenge
 > 
 > Create a new data frame from the `penguins` data that meets the 
@@ -173,7 +217,7 @@ Note that the final data frame is the leftmost part of this expression.
 > Hint: think about how the commands should be ordered to produce this data frame!
 > > ## Solution
 > > ~~~
-> > penguins_flipper_length_mm <- penguins %>%
+> > penguins_flipper_length_cm <- penguins %>%
 > >     filter(!is.na(penguins_flipper_length_mm)) %>%
 > >     mutate(flipper_length_cm = penguins_flipper_length_mm / 10) %>%
 > >     filter(flipper_length_cm < 20) %>%
@@ -192,48 +236,62 @@ The `group_by()` and `summarize()` functions
 ~~~
 penguins %>%
   group_by(sex) %>%
-  summarize(mean_body_mass_g = mean(body_mass_g, na.rm = TRUE))
+  summarize(mean_body_mass_g = mean(body_mass_g))
 ~~~
 {: .language-r}
-
-You may also have noticed that the output from these calls doesn’t run off the screen anymore. It’s one of the advantages of `tbl_df` over data frame.
 
 You can also group by multiple columns:
 
 ~~~
 penguins %>%
   group_by(sex, species) %>%
-  summarize(mean_body_mass_g = mean(body_mass_g, na.rm = TRUE)) %>%
-  tail()
+  summarize(mean_body_mass_g = mean(body_mass_g)) 
 ~~~
 {: .language-r}
 
-Here, we used `tail()` to look at the last six rows of our summary. Before, we had used `head()` to look at the first six rows. We can see that the `sex` column contains `NA` values because some animals had escaped before their sex and body body_mass_gs could be determined. The resulting `mean_body_mass_g` column does not contain `NA` but `NaN` (which refers to “Not a Number”) because `mean()` was called on a vector of `NA` values while at the same time setting `na.rm = TRUE`. To avoid this, we can remove the missing values for body_mass_g before we attempt to calculate the summary statistics on body_mass_g. Because the missing values are removed first, we can omit `na.rm = TRUE` when computing the mean:
+From both outputs, we see missing data. The value `NA` appears an additional, extraneous row.
+~~~
+# where are the NA's coming from?
+penguins %>%
+  filter(is.na(sex)) 
+~~~
+{: .language-r}
+
+`is.na()` is a function that determines whether something is an `NA`. The `!` symbol negates the result, so we’re asking for every row where sex is *not* an `NA`. We can pipe this filter so that we calculate the mean body mass after missing values have been removed.
 
 ~~~
+# filter out observations with missing body mass measurements and unidentified sex
 penguins %>%
-  filter(!is.na(body_mass_g)) %>%
+  filter(!is.na(body_mass_g), !is.na(sex)) %>%
   group_by(sex, species) %>%
   summarize(mean_body_mass_g = mean(body_mass_g))
-~~~
-{: .language-r}
 
-Here, again, the output from these calls doesn’t run off the screen anymore. If you want to display more data, you can use the `print()` function at the end of your chain with the argument `n` specifying the number of rows to display:
-
-~~~
 penguins %>%
-  filter(!is.na(body_mass_g)) %>%
+  filter(!is.na(body_mass_g), !is.na(sex)) %>%
   group_by(sex, species) %>%
-  summarize(mean_body_mass_g = mean(body_mass_g)) %>%
-  print(n = 15)
+  summarize(mean_body_mass_g = mean(body_mass_g),
+            min_body_mass_g = min(body_mass_g))
 ~~~
 {: .language-r}
 
-Once the data are grouped, you can also summarize multiple variables at the same time (and not necessarily on the same variable). For instance, we could add a column indicating the minimum body_mass_g for each species for each sex:
+When calculating summary values, we can also look at the amount of cases that went into the calculation. The `n()` function returns the number of observations in each group.
 
 ~~~
 penguins %>%
-  filter(!is.na(body_mass_g)) %>%
+  filter(!is.na(body_mass_g), !is.na(sex)) %>%
+  group_by(sex, species) %>%
+  summarize(mean_body_mass_g = mean(body_mass_g),
+            min_body_mass_g = min(body_mass_g),
+            num_cases = n())
+~~~
+{: .language-r}
+
+To keep only rows where no attribute values are missing, we can pipe `drop_na()` to the data so that the following piped commands are implemented on complete records.
+
+~~~
+# drop all rows with any NA's
+penguins %>%
+  drop_na() %>%
   group_by(sex, species) %>%
   summarize(mean_body_mass_g = mean(body_mass_g),
             min_body_mass_g = min(body_mass_g))
@@ -244,23 +302,11 @@ It is sometimes useful to rearrange the result of a query to inspect the values.
 
 ~~~
 penguins %>%
-  filter(!is.na(body_mass_g)) %>%
+  drop_na() %>%
   group_by(sex, species) %>%
   summarize(mean_body_mass_g = mean(body_mass_g),
             min_body_mass_g = min(body_mass_g)) %>%
   arrange(min_body_mass_g)
-~~~
-{: .language-r}
-
-To sort in descending order, we need to add the `desc()` function. If we want to sort the results by decreasing order of mean body_mass_g:
-
-~~~
-penguins %>%
-  filter(!is.na(body_mass_g)) %>%
-  group_by(sex, species) %>%
-  summarize(mean_body_mass_g = mean(body_mass_g),
-            min_body_mass_g = min(body_mass_g)) %>%
-  arrange(desc(mean_body_mass_g))
 ~~~
 {: .language-r}
 
@@ -308,14 +354,14 @@ penguins %>%
 ~~~
 {: .language-r}
 
-From the table above, we may learn that, for instance, there are 75 observations of the albigula species that are not specified for its sex (i.e. NA).
+From the table above, we may learn that, for instance, there are 6 observations of the Adelie species and 5 observations of the Gentoo species that are not specified for its sex (i.e. NA).
 
 > ## Challenge
 > 1. How many penguins are in each island surveyed?
 > 
 > 2. Use group_by() and summarize() to find the mean, min, and max 
-> bill length for each species (using species). Also add the 
-> number of observations (hint: see ?n).
+> bill length for each species (using `species`). Also add the 
+> number of observations (hint: use `n()`).
 > 
 > 3. What was the heaviest animal measured in each year? Return the 
 > columns year, island, species, and body_mass_g.
@@ -338,7 +384,7 @@ From the table above, we may learn that, for instance, there are 75 observations
 > >         mean_bill_length_mm = mean(bill_length_mm),
 > >         min_bill_length_mm = min(bill_length_mm),
 > >         max_bill_length_mm = max(bill_length_mm),
-> >         n = n()
+> >         num_cases = n()
 > >     )
 > > ~~~
 > > {: .language-r}
@@ -361,7 +407,7 @@ From the table above, we may learn that, for instance, there are 75 observations
 
 In the [spreadsheet lesson](https://datacarpentry.org/spreadsheet-ecology-lesson/01-format-data/), we discussed how to structure our data leading to the four rules defining a tidy dataset:
 
-1 Each variable has its own column
+1. Each variable has its own column
 2. Each observation has its own row
 3. Each value must have its own cell
 4. Each type of observational unit forms a table
