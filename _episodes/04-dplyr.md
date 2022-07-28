@@ -610,4 +610,14 @@ write_csv(penguins_raw_complete, file = "data/penguins_raw_complete.csv")
 ~~~
 {: .language-r}
 
+In our data folder, we now have two csv's. A csv can be read into R as a dataframe using the `read_csv()` function.
+We can also use `glimpse()` to see all data columns.
+
+~~~
+pcom <- read_csv("penguins_complete.csv")
+glimpse(pcom)
+glimpse(penguins_complete)
+~~~
+{: .language-r}
+
 {% include links.md %}
