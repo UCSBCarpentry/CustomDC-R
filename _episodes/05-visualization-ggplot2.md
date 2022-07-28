@@ -33,7 +33,11 @@ library(palmerpenguins)
 If not still in the workspace, load the data we saved in the previous lesson.
 
 ~~~
-penguins <- read_csv(path_to_file("penguins.csv"))
+data(penguins)
+
+# alternatively, we can load our csv's
+penguins_comp <- read_csv("data/penguins_complete.csv")
+penguins_raw_comp <- read_csv("data/penguins_raw_complete.csv")
 ~~~
 {: .language-r}
 
@@ -65,7 +69,7 @@ ggplot(data = penguins)
 * define an aesthetic mapping (using the aesthetic (aes) function), by selecting the variables to be plotted and specifying how to present them in the graph, e.g., as x/y positions or characteristics such as size, shape, color, etc.
 
 ~~~
-ggplot(data = penguins, mapping = aes(x = body_mass_g, y = flipper_length_mm))
+ggplot(data = penguins_comp, mapping = aes(x = body_mass_g, y = flipper_length_mm))
 ~~~
 {: .language-r}
 
@@ -77,7 +81,7 @@ ggplot(data = penguins, mapping = aes(x = body_mass_g, y = flipper_length_mm))
 To add a geom to the plot use `+` operator. Because we have two continuous variables, let’s use `geom_point()` first:
 
 ~~~
-ggplot(data = penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
+ggplot(data = penguins_comp, aes(x = body_mass_g, y = flipper_length_mm)) +
   geom_point()
 ~~~
 {: .language-r}
@@ -86,7 +90,7 @@ The + in the `ggplot2` package is particularly useful because it allows you to m
 
 ~~~
 # Assign plot to a variable
-penguins_plot <- ggplot(data = penguins,
+penguins_plot <- ggplot(data = penguins_comp,
                        mapping = aes(x = body_mass_g, y = flipper_length_mm))
 
 # Draw the plot
@@ -143,14 +147,14 @@ penguins_plot
 Building plots with `ggplot2` is typically an iterative process. We start by defining the dataset we’ll use, lay out the axes, and choose a geom:
 
 ~~~
-ggplot(data = penguins, aes(x = body_mass_g, y = flipper_length_mm)) + geom_point()
+ggplot(data = penguins_comp, aes(x = body_mass_g, y = flipper_length_mm)) + geom_point()
 ~~~
 {: .language-r}
 
 Then, we start modifying this plot to extract more information from it. For instance, we can add transparency (alpha) to avoid overplotting:
 
 ~~~
-ggplot(data = penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
+ggplot(data = penguins_comp, aes(x = body_mass_g, y = flipper_length_mm)) +
   geom_point(alpha = 0.1)
 ~~~
 {: .language-r}
@@ -158,7 +162,7 @@ ggplot(data = penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
 We can also add colors for all the points:
 
 ~~~
-ggplot(data = penguins, mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
+ggplot(data = penguins_comp, mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
   geom_point(alpha = 0.1, color = "blue")
 ~~~
 {: .language-r}
@@ -166,7 +170,7 @@ ggplot(data = penguins, mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
 Or to color each species in the plot differently, you could use a vector as an input to the argument color. `ggplot2` will provide a different color corresponding to different values in the vector. Here is an example where we color with species_id:
 
 ~~~
-ggplot(data = penguins, mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
+ggplot(data = penguins_comp, mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
   geom_point(alpha = 0.1, aes(color = species))
 ~~~
 {: .language-r}
@@ -185,22 +189,15 @@ Divergent -- If variables sit on a spectrum, where we have two "extremes" and a 
 Data represented by a divergent palette uses one color on one end of the spectrum and a visually different, distinct color on the other end.
 A visually neutral color is used in the middle.
 
-~~~
-#install.packages("RColorBrewer")
-library("RColorBrewer")
+![color pallettes made available by RColorbrewer package](../fig/pallettes_coloblind_friendly.png)
 
-ggplot(data= filter(surveys_complete, year > 1980 & genus == "Chaetodipus"),
-       mapping= aes(x= year, fill= sex)) + 
-  geom_bar() +
-  scale_fill_brewer(palette="Set2")
-~~~
-{: .language-r}
+These pallettes are made available by the package "RColorBrewer".
 
 ## Boxplot
-We can use boxplots to visualize the distribution of weight within each species:
+We can use boxplots to visualize the distribution of body mass within each species:
 
 ~~~
-ggplot(data = penguins, mapping = aes(x = species, y = body_mass_g)) +
+ggplot(data = penguins_comp, mapping = aes(x = species, y = body_mass_g)) +
   geom_boxplot()
 ~~~
 {: .language-r}
@@ -208,7 +205,7 @@ ggplot(data = penguins, mapping = aes(x = species, y = body_mass_g)) +
 By adding points to the boxplot, we can have a better idea of the number of measurements and of their distribution:
 
 ~~~
-ggplot(data = penguins, mapping = aes(x = species, y = body_mass_g)) +
+ggplot(data = penguins_comp, mapping = aes(x = species, y = body_mass_g)) +
   geom_boxplot(alpha = 0) +
   geom_jitter(alpha = 0.3, color = "tomato")
 ~~~
@@ -222,23 +219,27 @@ Notice how the boxplot layer is behind the jitter layer? What do you need to cha
 > An alternative to the boxplot is the violin plot (sometimes known as a beanplot), where the shape (of the density of points) is drawn.
 > 
 > Replace the box plot with a violin plot; see `geom_violin()`.
-> In many types of data, it is important to consider the scale of the observations. 
-> For example, it may be worth changing the scale of the axis to better distribute the observations in the space of the plot. 
-> Changing the scale of the axes is done similarly to adding/modifying other components (i.e., by incrementally adding commands). 
-> Try making these modifications:
-> 
-> - Represent weight on the log10 scale; see `scale_y_log10()`.
-> So far, we’ve looked at the distribution of weight within species. 
 > Try making a new plot to explore the distribution of another variable within each species.
 > 
-> - Create boxplot for hindfoot_length. 
+> Some suggested explorations:
+> - Create boxplot for `flipper_length_mm`. 
 > Overlay the boxplot layer on a jitter layer to show actual measurements.
 > 
-> - Add color to the data points on your boxplot according to the plot from which the sample was taken (plot_id).
+> - Add color to the data points on your boxplot according to the plot from which the observation was located (`island`).
+> Hint: Check the class for `island`. 
 > 
-> Hint: Check the class for plot_id. 
-> Consider changing the class of plot_id from integer to factor. 
-> Why does this change how R makes the graph?
+> > ## Solution
+> > 
+> > In this plot, we see the outline of a shape that fits the distribution of points.
+> > 
+> > ~~~
+> > ggplot(data = penguins_comp, mapping = aes(x = species, y = > > body_mass_g)) +
+> >   geom_violin(alpha = 0) +
+> >   geom_jitter(alpha = 0.3, color = "tomato")
+> > ~~~
+> > {: .language-r}
+> > 
+> {: .solution}
 {: .challenge}
 
 ## Plotting time series data
@@ -252,15 +253,16 @@ library(lubridate)
 {: .language-r}
 
 ~~~
-peng_raw_subset <- penguins_raw %>%
+penguins_raw_subset <- penguins_raw_comp %>%
   select("Island", "Species", "Date Egg") %>%
-  filter(year(penguins_raw[["Date Egg"]]) == 2008)
+  filter(year(penguins_raw_complete[["Date Egg"]]) == 2008) %>%
+  rename(date_egg = "Date Egg")
 ~~~
 {: .language-r}
 
 ~~~
-daily_counts <- peng_raw_subset %>%
-  count(Daily, Species)
+daily_counts <- penguins_raw_subset %>%
+  count(date_egg, Species)
 
 View(daily_counts)
 ~~~
@@ -269,23 +271,23 @@ View(daily_counts)
 Timelapse data can be visualized as a line plot with years on the x-axis and counts on the y-axis:
 
 ~~~
-ggplot(data = daily_counts, aes(x = Daily, y = n)) +
+ggplot(data = daily_counts, aes(x = date_egg, y = n)) +
   geom_line()
 ~~~
 {: .language-r}
 
-Unfortunately, this does not work because we plotted data for all the genera together. We need to tell ggplot to draw a line for each genus by modifying the aesthetic function to include group = genus:
+Unfortunately, this does not work because we plotted data for all the `species` together. We need to tell ggplot to draw a line for each `species` by modifying the aesthetic function to include group = `species`:
 
 ~~~
-ggplot(data = daily_counts, aes(x = Daily, y = n, group = Species)) +
+ggplot(data = daily_counts, aes(x = date_egg, y = n, group = Species)) +
   geom_line()
 ~~~
 {: .language-r}
 
-We will be able to distinguish genera in the plot if we add colors (using color also automatically groups the data):
+We will be able to distinguish `species` in the plot if we add colors (using color also automatically groups the data):
 
 ~~~
-ggplot(data = daily_counts, aes(x = Daily, y = n, color = Species)) +
+ggplot(data = daily_counts, aes(x = date_egg, y = n, color = Species)) +
   geom_line()
 ~~~
 {: .language-r}
@@ -295,7 +297,7 @@ In the previous lesson, we saw how to use the pipe operator %>% to use different
 
 ~~~
 daily_counts %>%
-  ggplot(mapping = aes(x = Daily, y = n, color = species)) +
+  ggplot(mapping = aes(x = date_egg, y = n, color = Species)) +
   geom_line()
 ~~~
 {: .language-r}
@@ -304,8 +306,8 @@ The pipe operator can also be used to link data manipulation with consequent dat
 
 ~~~
 daily_counts_graph <- peng_raw_subset %>%
-  count(Daily, Species) %>%
-  ggplot(mapping = aes(x = Daily, y = n, color = Species)) +
+  count(date_egg, Species) %>%
+  ggplot(mapping = aes(x = date_egg, y = n, color = Species)) +
   geom_line()
 
 daily_counts_graph
@@ -451,7 +453,7 @@ ggplot(data = penguins_complete,
 
 Note that it is also possible to change the fonts of your plots. If you are on Windows, you may have to install the [extrafont package](https://github.com/wch/extrafont), and follow the instructions included in the README for this package.
 
-After our manipulations, you may notice that the values on the x-axis are still not properly readable. Let’s change the orientation of the labels and adjust them vertically and horizontally so they don’t overlap. You can use a 90 degree angle, or experiment to find the appropriate angle for diagonally oriented labels. We can also modify the facet label text `(strip.text)` to italicize the genus names:
+After our manipulations, you may notice that the values on the x-axis are still not properly readable. Let’s change the orientation of the labels and adjust them vertically and horizontally so they don’t overlap. You can use a 90 degree angle, or experiment to find the appropriate angle for diagonally oriented labels. We can also modify the facet label text `(strip.text)` to italicize the species names:
 
 ~~~
 ggplot(data = penguins_complete,
