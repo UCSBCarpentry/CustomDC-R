@@ -369,17 +369,6 @@ ggplot(data = penguins_complete,
 ~~~
 {: .language-r}
 
-## Available pallettes
-
-~~~
-install.packages("RColorBrewer")
-library(RColorBrewer)
-
-RColorBrewer::display.brewer.all()
-RColorBrewer::display.brewer.all(colorblindFriendly = TRUE)
-~~~
-{: .language-r}
-
 ## ggplot2 themes
 Usually plots with white background look more readable when printed. Every single component of a ggplot graph can be customized using the generic theme() function, as we will see below. However, there are pre-loaded themes available that change the overall appearance of the graph without much effort.
 
@@ -417,7 +406,7 @@ The [ggthemes](https://ggplot2.tidyverse.org/reference/ggtheme.html) package pro
 > {: .solution}
 {: .challenge}
 
-##v Customization
+## Customization
 Take a look at the [ggplot2 cheat sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization-2.1.pdf), and think of ways you could improve the plot.
 
 Now, let’s change names of axes to something more informative and add a title to the figure:
