@@ -413,17 +413,19 @@ In the [spreadsheet lesson](https://datacarpentry.org/spreadsheet-ecology-lesson
 4. Each type of observational unit forms a table
 Here we examine the fourth rule: Each type of observational unit forms a table.
 
-In `penguins`, the rows of `penguins` contain the values of variables associated with each record (the unit), values such as the body_mass_g or sex of each animal associated with each record. What if instead of comparing records, we wanted to compare the different mean body_mass_g of each sex between islands? (Ignoring `island` for simplicity).
+In `penguins`, the rows of `penguins` contain the values of variables associated with each record (the unit), values such as the `body_mass_g` or `sex` of each animal associated with each record. What if instead of comparing records, we wanted to compare the different mean `body_mass_g` of each `sex` between `islands`? (Ignoring `island` for simplicity).
 
-We’d need to create a new table where each row (the unit) is comprised of values of variables associated with each island. In practical terms this means the values in `sex` would become the names of column variables and the cells would contain the values of the mean body_mass_g observed on each island.
+We’d need to create a new table where each row (the unit) is comprised of values of variables associated with each `island`. In practical terms this means the values in `sex` would become the names of column variables and the cells would contain the values of the mean `body_mass_g` observed on each `island`.
 
-Having created a new table, it is therefore straightforward to explore the relationship between the body_mass_g of different penguins within, and between, the islands. The key point here is that we are still following a tidy data structure, but we have reshaped the data according to the observations of interest: average sex body_mass_g per island instead of recordings per date.
+Having created a new table, it is therefore straightforward to explore the relationship between the `body_mass_g` of different penguins within, and between, the `islands`. The key point here is that we are still following a tidy data structure, but we have reshaped the data according to the observations of interest: average `sex` `body_mass_g` per `island` instead of recordings per date.
 
 The opposite transformation would be to transform column names into values of a variable.
 
 We can do both these of transformations with two `tidyr` functions, `pivot_wider()` and `pivot_longer()`.
 
 These may sound like dramatically different data layouts, but there are some tools that make transitions between these layouts more straightforward than you might think! The gif below shows how these two formats relate to each other, and gives you an idea of how we can use R to shift from one format to the other.
+
+![](https://datacarpentry.org/R-ecology-lesson/img/tidyr-pivot_wider_longer.gif)
 
 #### Pivoting from long to wide format
 `pivot_wider()` takes three principal arguments:
@@ -448,7 +450,7 @@ str(penguins_gw)
 ~~~
 {: .language-r}
 
-This yields `penguins_gw` where the observations for each island are distributed across multiple rows, 196 observations of 3 variables. Using `pivot_wider()` with the names from `sex` and with values from `mean_body_mass_g` this becomes 24 observations of 11 variables, one row for each island.
+This yields `penguins_gw` where the observations for each island are distributed across multiple rows, 9 observations of 3 variables (`island`, `sex`, and `mean_body_mass_g`). Using `pivot_wider()` with the names from `sex` and with values from `mean_body_mass_g` this becomes 3 observations of 2 variables, one row for each `island` and one column for each `sex`).
 
 ~~~
 penguins_wide <- penguins_gw %>%
@@ -458,17 +460,26 @@ str(penguins_wide)
 ~~~
 {: .language-r}
 
-We could now island comparisons between the body_mass_g of penguins in different islands, although we may wish to fill in the missing values first.
+~~~
+penguins_wide
+~~~
+{: .language-r}
+
+We could now compare between the `mean_body_mass_g` values between penguin `sex` and different `islands`. Note that since we did not filter `NA` values from sex, we have a third column. We can use the `rename()` function to provide this column a more descriptive name.
 
 ~~~
-penguins_gw %>%
-  pivot_wider(names_from = sex, values_from = mean_body_mass_g, values_fill = 0) %>%
-  head()
+# fix that funny name
+penguins_wide <- penguins_gw %>%
+  pivot_wider(names_from = sex, 
+              values_from = mean_body_mass_g) %>%
+  rename(unknown = `NA`) # "unknown" is the new column name
+
+penguins_wide
 ~~~
 {: .language-r}
 
 #### Pivoting from wide to long format
-The opposing situation could occur if we had been provided with data in the form of `penguins_wide`, where the sex names are column names, but we wish to treat them as values of a sex variable instead.
+The opposing situation could occur if we had been provided with data in the form of `penguins_wide`, where the `sex` names are column names, but we wish to treat them as values of a `sex` variable instead.
 
 In this situation we are reshaping the column names and turning them into a pair of new variables. One variable represents the column names as values, and the other variable contains the values previously associated with the column names.
 
@@ -485,15 +496,17 @@ In pivoting longer, we also need to specify what columns to reshape. If the colu
 
 ~~~
 penguins_long <- penguins_wide %>%
-  pivot_longer(names_to = "sex", values_to = "mean_body_mass_g", cols = -island)
+  pivot_longer(names_to = "sex", 
+               values_to = "mean_body_mass_g", 
+               cols = female:unknown) #includes columns "female", "male", and "unknown"
 
-str(penguins_long)
+penguins_long
 ~~~
 {: .language-r}
 
-Note that now the `NA` are included in the long format data frame. Pivoting wider and then longer can be a useful way to balance out a dataset so that every replicate has the same composition
+Pivoting wider and then longer can be a useful way to balance out a dataset so that every replicate has the same composition.
 
-We could also have used a specification for what columns to exclude. In this example, we will use all columns except `island` for the names variable. By using the minus sign in the `cols` argument, we omit `island` from being reshaped
+We could also have used a specification for what columns to exclude. In this next example, we will use all columns except `island` for the names variable. By using the minus sign in the `cols` argument, we omit `island` from being reshaped
 
 ~~~
 penguins_wide %>%
@@ -503,35 +516,35 @@ penguins_wide %>%
 {: .language-r}
 
 > ## Challenge
-> 1. Reshape the `penguins` data frame with year as columns, `island` as 
-> rows, and the number of species per island as the values. You will need to 
+> 1. Reshape the `penguins` data frame with `year` as columns, `island` as 
+> rows, and the number of `species` per `island` as the values. You will need to 
 > summarize before reshaping, and use the function `n_distinct()` to get 
 > the number of unique species within a particular chunk of data. It’s a 
 > powerful function! See `?n_distinct` for more.
 > 
-> 2. Now take that data frame and pivot_longer() it, so each row is a 
-> unique island by year combination.
+> 2. Now take that data frame and `pivot_longer()` it, so each row is a 
+> unique `island` by year combination.
 > 
-> 3. The penguins data set has two measurement columns: bill_length_mm 
-> and body_mass_g. This makes it difficult to do things like look at the 
+> 3. The penguins data set has two measurement columns: `bill_length_mm` 
+> and `body_mass_g`. This makes it difficult to do things like look at the 
 > relationship between mean values of each measurement per year in 
-> different island types. Let’s walk through a common solution for this 
-> type of problem. First, use pivot_longer() to create a dataset where we 
+> different `island` types. Let’s walk through a common solution for this 
+> type of problem. First, use `pivot_longer()` to create a dataset where we 
 > have a names column called measurement and a value column that takes on 
-> the value of either bill_length_mm or body_mass_g. Hint: You’ll need to 
+> the value of either `bill_length_mm` or `body_mass_g`. Hint: You’ll need to 
 > specify which columns will be part of the reshape.
 > 
 > 4. With this new data set, calculate the average of each measurement in 
-> each year for each different island. Then pivot_wider() them into a 
-> data set with a column for bill_length_mm and body_mass_g. Hint: You only 
-> need to specify the names and values columns for pivot_wider().
+> each year for each different island. Then `pivot_wider()` them into a 
+> data set with a column for `bill_length_mm` and `body_mass_g`. Hint: You only 
+> need to specify the names and values columns for `pivot_wider()`.
 > 
 > > ## Solution
 > > 1.
 > > ~~~
 > > penguins_wide_species <- penguins %>%
 > >    group_by(island, year) %>%
-> >    summarize(n_species = n_distinct(sex)) %>%
+> >    summarize(n_species = n_distinct(species)) %>%
 > >    pivot_wider(names_from = year, values_from = n_species)
 > > 
 > >    head(penguins_wide_species)
@@ -574,37 +587,26 @@ Before using `write_csv()`, we are going to create a new folder, `data`, in our 
 
 In preparation for our next lesson on plotting, we are going to prepare a cleaned up version of the data set that doesn’t include any missing data.
 
-Let’s start by removing observations of animals for which `body_mass_g` and `bill_length_mm` are missing, or the `sex` has not been determined:
+Let’s start by removing observations of penguins for which there is an attribute that is missing or has not been determined:
 
 ~~~
+# only use complete records
 penguins_complete <- penguins %>%
-  filter(!is.na(body_mass_g),           # remove missing body_mass_g
-         !is.na(bill_length_mm),  # remove missing bill_length_mm
-         !is.na(sex))                # remove missing sex
+  drop_na()
+
+penguins_raw_complete <- penguins_raw %>%
+  drop_na()
 ~~~
 {: .language-r}
 
-Because we are interested in plotting how species abundances have changed through time, we are also going to remove observations for rare species (i.e., that have been observed less than 50 times). We will do this in two steps: first we are going to create a data set that counts how often each species has been observed, and filter out the rare species; then, we will extract only the observations for these more common species:
+To make sure that everyone has the same data set, check that `penguins_complete` and `penguins_raw_complete` has rows and columns by using `dim()`.
 
-~~~
-## Extract the most common species
-species_counts <- penguins_complete %>%
-    count(species) %>%
-    filter(n >= 50)
-
-## Only keep the most common species
-penguins_complete <- penguins_complete %>%
-  filter(species %in% species_counts$species)
-~~~
-{: .language-r}
-
-To make sure that everyone has the same data set, check that `penguins_complete` has rows and columns by typing `dim(penguins_complete)`.
-
-Now that our data set is ready, we can save it as a CSV file in our `data` folder.
+Now that our data set is ready, we can save it as a CSV file in our `data` folder. We should create a data folder in our RStudio `Files` panel before exporting these.
 
 ~~~
 write_csv(penguins_complete, file = "data/penguins_complete.csv")
 
+write_csv(penguins_raw_complete, file = "data/penguins_raw_complete.csv")
 ~~~
 {: .language-r}
 
